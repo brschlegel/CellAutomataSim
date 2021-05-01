@@ -11,4 +11,6 @@ public static class GlobalVars
     public static Dictionary<Color, CellType> colorToType = new Dictionary<Color, CellType>{
         {new Color(255,0,0),CellType.Alive},{new Color(255,255,255), CellType.Dead},{ new Color(0,0,0),CellType.Wall},{new Color(0,0,255),CellType.Goal}
     };
+
+    public static int drawing = -1;
 }

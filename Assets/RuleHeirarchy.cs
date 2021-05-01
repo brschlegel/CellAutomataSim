@@ -8,15 +8,11 @@ public class RuleHeirarchy : MonoBehaviour
     public Rule bottom;
     int count = 0;
 
-    public RuleEditor editor;
-    public GameObject editorObj;
     int[,] prevTypes;
     void Start()
     {
         top = null;
         bottom = null;
-        editor = editorObj.GetComponent<RuleEditor>();
-
     }
 
 
@@ -27,28 +23,29 @@ public class RuleHeirarchy : MonoBehaviour
 
     }
 
-    public bool CreateRule(int[] condition, int effect, string name)
+    public Rule CreateRule(int[] condition, int effect, string name)
     {
         if (ValidateRule(condition))
         {
+            Rule newRule =  new Rule(condition, effect, name);
             if (top == null)
             {
-                top = new Rule(condition, effect, name);
+                
+                top = newRule;
                 bottom = top;
             }
             else
             {
-                Rule newRule = new Rule(condition, effect, name);
                 newRule.previous = bottom;
                 bottom.next = newRule;
                 bottom = newRule;
             }
             count++;
-            editor.AddButton(bottom);
+         
             PrintHeirarchy();
-            return true;
+            return newRule;
         }
-        return false;
+        return null;
     }
     public void Init(GameObject[,] matrix)
     {

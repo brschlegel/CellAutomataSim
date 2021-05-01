@@ -49,9 +49,11 @@ public class RuleCreation : MonoBehaviour
         eff = effect.value;
         if(editing == null)
         {
-            if (heirarchy.CreateRule(cond, eff, nameInput.text))
+            Rule created = heirarchy.CreateRule(cond, eff, nameInput.text);
+            if (created != null)
             {
                 status.text = "Success!";
+                editor.AddButton(created);
             }
             else
             {
