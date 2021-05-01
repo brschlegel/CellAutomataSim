@@ -14,7 +14,11 @@ public class RuleCreation : MonoBehaviour
     public RuleEditor editor;
     public GameObject editorObj;
     public Text status;
+    public Toggle horizontalCheckBox;
+    public Toggle verticalCheckBox;
     GameObject createButton;
+    bool horizontalDown;
+    bool verticalDown;
     Rule editing;
     void Start()
     {
@@ -29,6 +33,8 @@ public class RuleCreation : MonoBehaviour
         status = GameObject.Find("Status").GetComponent<Text>();
         editing = null;
         createButton = GameObject.Find("CreateButton");
+        horizontalDown = false;
+        verticalDown = false;
     }
 
     // Update is called once per frame
@@ -49,7 +55,7 @@ public class RuleCreation : MonoBehaviour
         eff = effect.value;
         if(editing == null)
         {
-            Rule created = heirarchy.CreateRule(cond, eff, nameInput.text);
+            Rule created = heirarchy.CreateRule(cond, eff, nameInput.text, horizontalDown, verticalDown);
             if (created != null)
             {
                 status.text = "Success!";
@@ -65,7 +71,7 @@ public class RuleCreation : MonoBehaviour
             if(heirarchy.ValidateRule(cond))
             {
                 status.text = "Edited!";
-                heirarchy.EditRule(editing, cond, eff, nameInput.text);
+                heirarchy.EditRule(editing, cond, eff, nameInput.text, horizontalDown, verticalDown);
                 editing = null;
                 createButton.transform.GetChild(0).GetComponent<Text>().text = "Create";
             }
@@ -74,6 +80,7 @@ public class RuleCreation : MonoBehaviour
                 status.text = "1 cell must be alive";
             }
         }
+        Debug.Log("Rule Created: " + heirarchy.count);
     }
 
     public void SetUpEdit(Rule rule)
@@ -85,8 +92,20 @@ public class RuleCreation : MonoBehaviour
         effect.value = rule.data.effect;
         nameInput.text = rule.data.name;
         createButton.transform.GetChild(0).GetComponent<Text>().text = "Edit";
+        horizontalCheckBox.isOn = rule.data.horizontal;
+        verticalCheckBox.isOn = rule.data.vertical;
         editing = rule;
 
+    }
+
+    public void changeHorizontal(bool value)
+    {
+        horizontalDown = value;
+    }
+
+    public void changeVertical(bool value)
+    {
+        verticalDown = value;
     }
 
     

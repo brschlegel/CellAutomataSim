@@ -6,7 +6,7 @@ public class RuleHeirarchy : MonoBehaviour
 {
     Rule top;
     public Rule bottom;
-    int count = 0;
+    public int count = 0;
 
     int[,] prevTypes;
     void Start()
@@ -23,11 +23,11 @@ public class RuleHeirarchy : MonoBehaviour
 
     }
 
-    public Rule CreateRule(int[] condition, int effect, string name)
+    public Rule CreateRule(int[] condition, int effect, string name, bool hor, bool vert)
     {
         if (ValidateRule(condition))
         {
-            Rule newRule =  new Rule(condition, effect, name);
+            Rule newRule =  new Rule(condition, effect, name, hor, vert);
             if (top == null)
             {
                 
@@ -88,22 +88,61 @@ public class RuleHeirarchy : MonoBehaviour
 
     bool checkCell(GameObject[,] matrix, Rule rule, int i, int j)
     {
+        return CheckSym(matrix, rule, i, j, "none") || CheckSym(matrix, rule, i , j, "horizontal") ||CheckSym(matrix, rule, i , j, "vertical") || CheckSym(matrix, rule, i , j, "diagonal");
+    }
+
+    //Yeah, this code is pretty repeated but I'm over it
+    bool CheckSym(GameObject[,] matrix, Rule rule, int i, int j, string type)
+    {
+        switch(type)
+        {
+            case "horizontal":
+            if(!rule.data.horizontal)
+                return false;
+                break;
+            case "vertical":
+            if(!rule.data.vertical)
+                return false;
+                break;
+            case "diagonal":
+            if(!(rule.data.horizontal && rule.data.vertical))
+                return false;
+                break;
+        }
+
         for (int m = -1; m < 2; m++)
         {
             for (int n = -1; n < 2; n++)
             {
-
                 int matrixValue = (int)(GlobalVars.colorToType[matrix[i + m, j + n].GetComponent<SpriteRenderer>().color]);
-                int ruleValue = rule.getValue(m + 1, n + 1);
-                if (ruleValue != -1)
+                int ruleValue = GetRuleValue(type, rule, m,n);
+                if(!CheckRuleValue(matrixValue, ruleValue))
                 {
-                    if (matrixValue != ruleValue)
-                        return false;
+                    return false;
                 }
-
             }
         }
         return true;
+    }
+
+    int GetRuleValue(string type, Rule rule, int m, int n)
+    {
+        switch(type)
+        {
+            case "none":
+                return rule.getValue(m + 1, n + 1);
+                break;
+            case "horizontal":
+                return rule.getValue(1 - m, n+1);
+                break;
+            case "vertical":
+                return rule.getValue(m+1, 1-n);
+                break;
+            case "diagonal":
+                return rule.getValue(1-m, 1-n);
+                break;
+        }
+        return -2;
     }
 
     public void DeleteRule(Rule rule)
@@ -123,6 +162,19 @@ public class RuleHeirarchy : MonoBehaviour
         rule.next.previous = rule.previous;
         rule.previous.next = rule.next;
 
+    }
+
+    bool CheckRuleValue(int matrixValue, int ruleValue)
+    {
+        if (ruleValue != -1)
+        {
+            if (matrixValue != ruleValue)
+            {
+                return false;
+            }
+
+        }
+        return true;
     }
 
     public void PrintHeirarchy()
@@ -171,13 +223,15 @@ public class RuleHeirarchy : MonoBehaviour
         return false;
     }
 
-    public void EditRule(Rule rule, int[] conditions, int effect, string name)
+    public void EditRule(Rule rule, int[] conditions, int effect, string name, bool horizontal, bool vertical)
     {
         if(ValidateRule(conditions))
         {
             rule.data.condition = conditions;
             rule.data.effect = effect;
             rule.data.name = name;
+            rule.data.horizontal = horizontal;
+            rule.data.vertical = vertical;
         }
     }
 

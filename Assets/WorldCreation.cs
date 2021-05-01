@@ -10,6 +10,7 @@ public class WorldCreation : MonoBehaviour
     public int width = 40;
     public int height = 40;
     public InputField nameInput;
+    public bool levelEditor = false;
 
     public float cellWidth = 1;
     public float cellHeight = 1;
@@ -34,8 +35,10 @@ public class WorldCreation : MonoBehaviour
                 }
             }
         }
-
+        if(levelEditor)
+        {
         nameInput = GameObject.Find("SaveName").GetComponent<InputField>();
+        }
     }
 
     // Update is called once per frame
