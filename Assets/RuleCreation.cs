@@ -98,6 +98,19 @@ public class RuleCreation : MonoBehaviour
 
     }
 
+    public void SetUpView(Rule rule)
+    {
+        for(int i = 0; i < conditions.Count; i++)
+        {
+            conditions[i].value = rule.data.condition[i] + 1;
+        }
+        effect.value = rule.data.effect;
+        nameInput.text = rule.data.name;
+        createButton.transform.GetChild(0).GetComponent<Text>().text = "Edit";
+        horizontalCheckBox.isOn = rule.data.horizontal;
+        verticalCheckBox.isOn = rule.data.vertical;
+    }
+
     public void changeHorizontal(bool value)
     {
         horizontalDown = value;

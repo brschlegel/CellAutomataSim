@@ -18,6 +18,8 @@ public class RuleEditor : MonoBehaviour
     Text selectedText;
     GameObject swapButton;
     GameObject deleteButton;
+
+    Transform ruleParent;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,7 @@ public class RuleEditor : MonoBehaviour
         deleteButton.SetActive(false);
         swapButton.SetActive(false);
         creator = creatorObj.GetComponent<RuleCreation>();
+        ruleParent = GameObject.Find("RuleParent").transform;
     }
 
     // Update is called once per frame
@@ -41,7 +44,7 @@ public class RuleEditor : MonoBehaviour
     public void AddButton(Rule rule)
     {
         int offset = 35;
-        GameObject b = Instantiate(buttonPrefab,new Vector3(0,0,0),Quaternion.identity, transform ).gameObject;
+        GameObject b = Instantiate(buttonPrefab,new Vector3(0,0,0),Quaternion.identity, ruleParent ).gameObject;
         float y = 0;
         if(rule.previous != null)
              y = inverseButtons[rule.previous].transform.localPosition.y - offset;
@@ -52,6 +55,7 @@ public class RuleEditor : MonoBehaviour
         buttons[b] = rule;
         inverseButtons[rule] = b;
         b.GetComponent<Button>().onClick.AddListener(ChangeSelected);
+        b.GetComponent<Button>().onClick.AddListener(SetUpViewSelected);
     }
 
     public void ChangeSelected()
@@ -123,5 +127,21 @@ public class RuleEditor : MonoBehaviour
     public void EditSelected()
     {
         creator.SetUpEdit(buttons[selected]);
+    }
+
+    public void SetUpViewSelected()
+    {
+        creator.SetUpView(buttons[selected]);
+    }
+
+    public void Clear()
+    {
+          foreach(Transform child in ruleParent)
+        {
+            Destroy(child.gameObject);
+        
+        }
+        buttons.Clear();
+        inverseButtons.Clear();
     }
 }

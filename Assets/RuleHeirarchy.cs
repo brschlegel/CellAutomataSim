@@ -25,6 +25,7 @@ public class RuleHeirarchy : MonoBehaviour
 
     public Rule CreateRule(int[] condition, int effect, string name, bool hor, bool vert)
     {
+        
         if (ValidateRule(condition))
         {
             Rule newRule =  new Rule(condition, effect, name, hor, vert);
@@ -42,7 +43,7 @@ public class RuleHeirarchy : MonoBehaviour
             }
             count++;
          
-            PrintHeirarchy();
+            
             return newRule;
         }
         return null;
@@ -162,6 +163,13 @@ public class RuleHeirarchy : MonoBehaviour
         rule.next.previous = rule.previous;
         rule.previous.next = rule.next;
 
+    }
+
+    public void Clear()
+    {
+        top = null;
+        bottom = null;
+        count = 0;
     }
 
     bool CheckRuleValue(int matrixValue, int ruleValue)

@@ -761,7 +761,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 40
   height: 40
-  nameInput: {fileID: 0}
+  nameInput: {fileID: 548219236}
+  levelEditor: 0
   cellWidth: 1
   cellHeight: 1
   cellPrefab: {fileID: 960930243763869006, guid: aea4a2a1162b5f94893ef589b17f470d, type: 3}
