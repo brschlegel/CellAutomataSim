@@ -1,87 +1,193 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | CellAutomataSim</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-mobile-warning">
-        WebGL builds are not supported on mobile devices.
-      </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">CellAutomataSim</div>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Cellular Automata Sim</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+  <!-- Custom styles for this template -->
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Home</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#Content">Simulation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#Game">Game</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#AIPlayer">AI</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="https://brschlegel.github.io/">Personal Website</a>
+          </li>
+        </ul>
       </div>
     </div>
-    <script>
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Build.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/Build.data.unityweb",
-        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
-        codeUrl: buildUrl + "/Build.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "CellAutomataSim",
-        productVersion: "1.0",
-      };
+  </nav>
 
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var mobileWarning = document.querySelector("#unity-mobile-warning");
+  <section id="about">
+    <div class="container">
+      <div class="row">
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
+        <h2>What is it?</h2>
+        <p>This project was made for my IGME 797 class Artificial Intelligence and Machine Learning for Games and
+          Simulation. The project consists of two main parts, building out a system for creating rules for a cellular
+          automata simulation as well as a game off of that system, and traning an AI player to attempt to play the
+          game. </p>
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        container.className = "unity-mobile";
-        // Avoid draining fillrate performance on mobile devices,
-        // and default/override low DPI mode on mobile browsers.
-        config.devicePixelRatio = 1;
-        mobileWarning.style.display = "block";
-        setTimeout(() => {
-          mobileWarning.style.display = "none";
-        }, 5000);
-      } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
-      loadingBar.style.display = "block";
+      </div>
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+    </div>
+  </section>
+
+  <section id="Content" class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h1>The Simulation and Creating Rules</h1>
+
+          <p>The board, consisting of colored cells, evolves over time based on a set of rules. Game of life is a
+            popular example, with the rules being: </p>
+          <ol>
+            <li>Any live cell with two or three live neighbours survives.</li>
+            <li>Any dead cell with three live neighbours becomes a live cell.</li>
+            <li>All other live cells die in the next generation. Similarly, all other dead cells stay dead.</li>
+          </ol>
+          <div class="figure">
+            <img src="Simulation.PNG" class="image-fluid figure-img">
+
+          </div>
+          <p>What I wanted to do was make a system for creating rules that could be created only using a string of
+            numbers (so the ML agent could make inputs and modify them easily), but had some sort of semantic meaning to
+            a human player. I took inspirations from <a
+              href="https://en.wikipedia.org/wiki/Convolutional_neural_network">Convolutinal Neural Networks</a>,
+            specifically the way it slides a convolution across an image.
+            I took this and melded it quite a bit into a concept of rules.</p>
+          <h2>Rules</h2>
+          <div class="figure">
+            <img src="RuleCreation.PNG" class="image-fluid figure-img">
+          </div>
+          <p>Rules in my system consist of a 3x3 matrix, boolean variables for horizontal and vertical symmetry, as well
+            as an effect. The entries of the 3x3 matrix correspond to cell states surrounding the cell being examined,
+            with the middle entry in the matrix being the cell itself. Rules
+            evaluate to true or false. To evaluate the rule, we check the cell's surroundings and see if they match the
+            matrix. If they do, then change the cell to the effect, ie: Alive or Dead. If they don't then nothing
+            happens. Important to note is that entries in the matrix can be N/A, meaning it doesn't matter what they
+            are, but atleast one entry must be marked "Alive".</p>
+          <h2>Hierarchy</h2>
+          <p>The real fun comes in combining rules to create complex behavior, and to do that we construct a rule
+            hierarchy. We start evaluating rules from the top of the hierarchy. If a rule evaluates to true, then we
+            stop evaluating rules and move on to the next cell. If it evaluates to false, then we move down the
+            heirarchy and check the next rule, and continue in that fasion. This solves any conflicts created by
+            multiple rules,
+            and allows you to create rules like "A cell is alive when the cell beneath it is alive, but only if the cell
+            above it isn't a wall".
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="Game" class="bg-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h1>The Game</h1>
+          <div class="figure">
+            <img src="Game.PNG" class="image-fluid figure-img">
+          </div>
+          <p>The game is a puzzle game where you try to create rules to get the starting position of red "Alive" cells
+            to change a blue "Goal" cell to a "Alive" cell. The challenge comes from the fact that every rule must have
+            at least one alive cell, meaning you must get a cell adjacent to the goal cell to have a rule change the
+            goal cell. There are also black "Wall" cells which cannot be changed</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="AIPlayer" class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h1>AI Player</h1>
+          <p>For the AI player I used Unity's Machine Learning package. Setting it up was a huge pain, especially as
+            many many things have changed with each version of the package. That being said, once its hooked up to the
+            project, scripting for and writing training environments is super easy and intuitive. I used a reinforcement
+            learning agent, trained in 5000 episodes.</p>
+          <h2>Training Environment</h2>
+          <p>The environment was basically the game, with a few twists. The agent played through the levels, restarting
+            if it loses a level. To stop the agent from just developing strategies that only work on the first couple
+            levels, the level order is randomized each time. The agent is attempting to reach the goal, and when it
+            reaches the goal it is trying to have the least number of squares alive.
+          </p>
+          <h2>The Agent</h2>
+          <p> The agent takes a series of one-hot representations of each cell in the board, and spits out a set of at
+            most 8 rules. I wasn't seeing great results at first, and it turns out just randomly making rules somewhat
+            rarely makes things actually change in the simulation. This makes sense, as
+            a rule's condition has to be completely met in order for it to change any cells. I thought about this for a
+            bit and came up with two solutions. We have some quantifiable measure of "specificity" in our rules, as we
+            can just count the number of "N/A" entries there are in the matrix. Another thing I could have done was add
+            a boost to score as follows: If the agent doesn't win, add the number of alive cells to their score. At the
+            time, it was taking multiple hours to train, during which it used most of my PC's resources (which is where
+            I do all my other work) and so I shrugged my shoulders and
+            said why not both. I think this might have had an adverse effect on some of the results in the end, but it
+            did work. The agent was now making things happen after about 1000 rounds of training, even starting to win
+            some levels!</p>
+          <h2>Results</h2>
+          <div class="figure">
+            <img src="AIPlayer.PNG" class="image-fluid figure-img">
+          </div>
+          <p>Results were mixed, but very interesting. The agent could win multiple levels in a row! Not all of them,
+            but even some of the more tricky ones were getting solved much to my joy. The varying starting positions
+            initally hid the fact that agent had found one solution that worked well enough on most of the levels.
+            Amazingly, the agent was completely ignoring its input, and just outputting the same (somewhat) winning
+            strategy every time! This was obviously not really what I wanted the agent to do, but it was still super
+            cool to see it break my game like that. I think having 2 seperate incentives to just fill the screen with
+            the most vague rules possible contributed, but I think I also weighed just winning the game far too heavily,
+            especially since the agent struggled with that at the beginning. The agent did show signs of some
+            optomization, instead of filling with a solid pattern it started filling with a checkerboard like pattern to
+            reduce the number of alive cells when the goal was reached.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom JavaScript for this theme -->
+  <script src="js/scrolling-nav.js"></script>
+
+</body>
+
 </html>
