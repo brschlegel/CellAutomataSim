@@ -21,13 +21,13 @@ public class CellManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        paused = false;
+        paused = true;
         rules = GetComponent<RuleHeirarchy>();
         world = GetComponent<WorldCreation>();
         matrix = world.matrix;
       
         rules.Init(matrix);
-        InvokeRepeating("Step", .25f,.25f);
+        InvokeRepeating("Step", .15f,.25f);
     }
 
     // Update is called once per frame
@@ -54,7 +54,22 @@ public class CellManager : MonoBehaviour
     public void Pause()
     {
         paused = !paused;
+        
     }
+
+    public void Reset()
+    {
+         for(int i = 1; i < matrix.GetLength(0) -1 ; i++)
+        {
+            for(int j = 1; j < matrix.GetLength(1)-1; j++)
+            {
+             
+                matrix[i,j].GetComponent<SpriteRenderer>().color = GlobalVars.typeToColor[CellType.Dead];
+            }
+        }
+    }
+
+
 
     
 }
